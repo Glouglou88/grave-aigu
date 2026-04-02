@@ -3,159 +3,427 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exercice grave / aigu</title>
+  <title>Quiz grave / aigu</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      text-align: center;
-      padding: 40px 20px;
-      margin: 0;
+    * {
+      box-sizing: border-box;
     }
 
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background: white;
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      background: linear-gradient(135deg, #dff6ff, #f8ecff);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #2f2f2f;
+    }
+
+    .quiz-card {
+      width: 100%;
+      max-width: 760px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
       padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #6c63ff;
+      color: white;
+      font-size: 14px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      margin-bottom: 14px;
     }
 
     h1 {
-      margin-bottom: 10px;
+      margin: 0 0 8px;
+      font-size: 32px;
+      color: #3b2d72;
     }
 
-    p {
-      color: #444;
-    }
-
-    button {
+    .subtitle {
+      margin: 0 0 22px;
       font-size: 18px;
-      padding: 12px 20px;
-      margin: 10px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
+      color: #555;
+    }
+
+    .progress-wrap {
+      margin: 18px 0 28px;
+    }
+
+    .progress-label {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 14px;
+      background: #ecebff;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6c63ff, #9f7aea);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .sound-zone {
+      background: linear-gradient(135deg, #eef7ff, #f7f0ff);
+      border: 2px dashed #c8bfff;
+      border-radius: 20px;
+      padding: 26px 20px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .sound-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
     }
 
     .play-btn {
-      background: #2d89ef;
+      background: linear-gradient(135deg, #2d89ef, #6c63ff);
       color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 26px;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(76, 97, 255, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .play-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(76, 97, 255, 0.32);
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
     }
 
     .answer-btn {
-      background: #eaeaea;
-    }
-
-    .answer-btn:hover {
-      background: #dcdcdc;
-    }
-
-    #result {
-      margin-top: 20px;
+      border: none;
+      border-radius: 18px;
+      padding: 18px;
       font-size: 20px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
       font-weight: bold;
-      min-height: 30px;
     }
 
-    #score {
-      margin-top: 20px;
+    .grave-btn {
+      background: #d9f1ff;
+      color: #135c8d;
+    }
+
+    .grave-btn:hover {
+      background: #c7eaff;
+      transform: translateY(-1px);
+    }
+
+    .aigu-btn {
+      background: #ffe2f2;
+      color: #9b2f68;
+    }
+
+    .aigu-btn:hover {
+      background: #ffd1ea;
+      transform: translateY(-1px);
+    }
+
+    .feedback {
+      min-height: 70px;
+      border-radius: 18px;
+      padding: 16px 18px;
+      background: #f7f7fb;
       font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-bottom: 18px;
     }
 
-    #nextBtn {
+    .feedback.success {
+      background: #e7f9ee;
+      color: #18794e;
+    }
+
+    .feedback.error {
+      background: #ffeaea;
+      color: #b42318;
+    }
+
+    .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .score {
+      font-size: 18px;
+      font-weight: bold;
+      color: #3b2d72;
+    }
+
+    .next-btn {
       background: #28a745;
       color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 22px;
+      font-size: 17px;
+      cursor: pointer;
       display: none;
+    }
+
+    .next-btn:hover {
+      background: #23913d;
+    }
+
+    .final-screen {
+      text-align: center;
+      display: none;
+      padding: 30px 10px 10px;
+    }
+
+    .final-screen h2 {
+      font-size: 32px;
+      color: #3b2d72;
+      margin-bottom: 10px;
+    }
+
+    .final-score {
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .restart-btn {
+      background: linear-gradient(135deg, #6c63ff, #2d89ef);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 24px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 26px;
+      }
+
+      .answers {
+        grid-template-columns: 1fr;
+      }
+
+      .quiz-card {
+        padding: 22px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Exercice : grave ou aigu ?</h1>
-    <p>Écoute le son, puis choisis s’il est grave ou aigu.</p>
+  <div class="quiz-card">
+    <div id="quizContent">
+      <div class="badge">Exercice interactif</div>
+      <h1>Grave ou aigu ?</h1>
+      <p class="subtitle">Écoute la note de piano, puis choisis si elle est grave ou aiguë.</p>
 
-    <button class="play-btn" onclick="playSound()">▶ Écouter le son</button>
+      <div class="progress-wrap">
+        <div class="progress-label" id="progressLabel">Question 1 sur 8</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
 
-    <div>
-      <button class="answer-btn" onclick="checkAnswer('grave')">Grave</button>
-      <button class="answer-btn" onclick="checkAnswer('aigu')">Aigu</button>
+      <div class="sound-zone">
+        <div class="sound-icon">🎹</div>
+        <button class="play-btn" onclick="playSound()">▶ Écouter la note</button>
+      </div>
+
+      <div class="answers">
+        <button class="answer-btn grave-btn" onclick="checkAnswer('grave')">Grave</button>
+        <button class="answer-btn aigu-btn" onclick="checkAnswer('aigu')">Aigu</button>
+      </div>
+
+      <div id="feedback" class="feedback">Clique sur “Écouter la note”, puis choisis ta réponse.</div>
+
+      <div class="bottom-row">
+        <div id="score" class="score">Score : 0 / 0</div>
+        <button id="nextBtn" class="next-btn" onclick="nextQuestion()">Question suivante</button>
+      </div>
     </div>
 
-    <div id="result"></div>
-    <div id="score">Score : 0 / 0</div>
-
-    <button id="nextBtn" onclick="nextQuestion()">Question suivante</button>
+    <div id="finalScreen" class="final-screen">
+      <h2>Bravo 🎉</h2>
+      <div id="finalScore" class="final-score"></div>
+      <p>Tu peux recommencer pour t’entraîner encore.</p>
+      <button class="restart-btn" onclick="restartQuiz()">Recommencer</button>
+    </div>
   </div>
 
   <script>
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const audioContext = new AudioContext();
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioContextClass();
+
+    const graveNotes = [
+      { name: "C3", freq: 130.81 },
+      { name: "D3", freq: 146.83 },
+      { name: "E3", freq: 164.81 },
+      { name: "G3", freq: 196.00 }
+    ];
+
+    const aiguNotes = [
+      { name: "C5", freq: 523.25 },
+      { name: "D5", freq: 587.33 },
+      { name: "E5", freq: 659.25 },
+      { name: "G5", freq: 783.99 }
+    ];
+
+    const totalQuestionsMax = 8;
 
     let currentAnswer = "";
+    let currentFrequency = 0;
     let totalQuestions = 0;
     let correctAnswers = 0;
-    let currentFrequency = 0;
+    let questionIndex = 0;
+    let alreadyAnswered = false;
 
-    function generateQuestion() {
-      const isHigh = Math.random() < 0.5;
+    function pianoTone(frequency, duration = 1.8) {
+      const now = audioContext.currentTime;
 
-      if (isHigh) {
-        currentFrequency = 880;
-        currentAnswer = "aigu";
-      } else {
-        currentFrequency = 220;
-        currentAnswer = "grave";
-      }
+      const masterGain = audioContext.createGain();
+      masterGain.connect(audioContext.destination);
+      masterGain.gain.setValueAtTime(0.0001, now);
+      masterGain.gain.exponentialRampToValueAtTime(0.45, now + 0.01);
+      masterGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
-      document.getElementById("result").textContent = "";
-      document.getElementById("nextBtn").style.display = "none";
+      const harmonics = [
+        { ratio: 1, gain: 1.0 },
+        { ratio: 2, gain: 0.35 },
+        { ratio: 3, gain: 0.18 },
+        { ratio: 4, gain: 0.08 }
+      ];
+
+      harmonics.forEach(h => {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(frequency * h.ratio, now);
+
+        gain.gain.setValueAtTime(h.gain, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(masterGain);
+
+        osc.start(now);
+        osc.stop(now + duration);
+      });
     }
 
-    function playTone(frequency, duration = 1) {
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+    function updateProgress() {
+      const currentDisplay = Math.min(questionIndex + 1, totalQuestionsMax);
+      document.getElementById("progressLabel").textContent =
+        `Question ${currentDisplay} sur ${totalQuestionsMax}`;
+      const percent = (questionIndex / totalQuestionsMax) * 100;
+      document.getElementById("progressFill").style.width = percent + "%";
+    }
 
-      oscillator.type = "sine";
-      oscillator.frequency.value = frequency;
+    function setFeedback(message, type = "") {
+      const feedback = document.getElementById("feedback");
+      feedback.textContent = message;
+      feedback.className = "feedback";
+      if (type) feedback.classList.add(type);
+    }
 
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+    function generateQuestion() {
+      alreadyAnswered = false;
+      document.getElementById("nextBtn").style.display = "none";
 
-      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+      const isHigh = Math.random() < 0.5;
+      const chosen = isHigh
+        ? aiguNotes[Math.floor(Math.random() * aiguNotes.length)]
+        : graveNotes[Math.floor(Math.random() * graveNotes.length)];
 
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + duration);
+      currentFrequency = chosen.freq;
+      currentAnswer = isHigh ? "aigu" : "grave";
+
+      setFeedback("Clique sur “Écouter la note”, puis choisis ta réponse.");
+      updateProgress();
     }
 
     function playSound() {
       if (audioContext.state === "suspended") {
         audioContext.resume();
       }
-      playTone(currentFrequency);
+      pianoTone(currentFrequency);
     }
 
     function checkAnswer(answer) {
+      if (alreadyAnswered) return;
+
+      alreadyAnswered = true;
       totalQuestions++;
 
       if (answer === currentAnswer) {
         correctAnswers++;
-        document.getElementById("result").textContent = "✅ Bravo, c’est correct !";
-        document.getElementById("result").style.color = "green";
+        setFeedback("✅ Bravo, c’est correct !", "success");
       } else {
-        document.getElementById("result").textContent =
-          "❌ Ce n’est pas correct. La bonne réponse était : " + currentAnswer;
-        document.getElementById("result").style.color = "red";
+        setFeedback("❌ Ce n’est pas correct. La bonne réponse était : " + currentAnswer + ".", "error");
       }
 
-      document.getElementById("score").textContent =
-        `Score : ${correctAnswers} / ${totalQuestions}`;
-
+      document.getElementById("score").textContent = `Score : ${correctAnswers} / ${totalQuestions}`;
       document.getElementById("nextBtn").style.display = "inline-block";
     }
 
     function nextQuestion() {
+      questionIndex++;
+      if (questionIndex >= totalQuestionsMax) {
+        showFinalScreen();
+        return;
+      }
+      generateQuestion();
+    }
+
+    function showFinalScreen() {
+      document.getElementById("quizContent").style.display = "none";
+      document.getElementById("finalScreen").style.display = "block";
+      document.getElementById("finalScore").textContent =
+        `Ton score final : ${correctAnswers} / ${totalQuestionsMax}`;
+      document.getElementById("progressFill").style.width = "100%";
+    }
+
+    function restartQuiz() {
+      totalQuestions = 0;
+      correctAnswers = 0;
+      questionIndex = 0;
+      alreadyAnswered = false;
+      document.getElementById("score").textContent = "Score : 0 / 0";
+      document.getElementById("quizContent").style.display = "block";
+      document.getElementById("finalScreen").style.display = "none";
       generateQuestion();
     }
 
