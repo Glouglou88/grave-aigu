@@ -462,8 +462,7 @@
 
           <line id="ledgerLine" x1="180" y1="0" x2="240" y2="0" stroke="black" stroke-width="2" style="display:none;" />
 
-          <ellipse id="noteHead" cx="210" cy="0" rx="14" ry="10" fill="black" transform="rotate(-20 210 0)"/>
-          <line id="noteStem" x1="222" y1="0" x2="222" y2="-40" stroke="black" stroke-width="3"/>
+          <ellipse id="noteHead" cx="210" cy="0" rx="15" ry="11" fill="white" stroke="black" stroke-width="3" transform="rotate(-20 210 0)"/>
         </svg>
       </div>
 
@@ -483,39 +482,31 @@
   </div>
 
   <script>
-    // ------------------------
-    // CONFIGURATION DES SONS
-    // ------------------------
-
     const questions = [
-  // GRAVE
-  { file: "sons/son-grave-1.wav", type: "grave", label: "Note grave", y: 130, ledger: true },
-  { file: "sons/son-grave-2.wav", type: "grave", label: "Note grave", y: 120, ledger: false },
-  { file: "sons/son-grave-3.wav", type: "grave", label: "Note grave", y: 110, ledger: false },
-  { file: "sons/son-grave-4.wav", type: "grave", label: "Note grave", y: 120, ledger: false },
-  { file: "sons/son-grave-5.wav", type: "grave", label: "Note grave", y: 110, ledger: false },
-  { file: "sons/son-grave-6.wav", type: "grave", label: "Note grave", y: 100, ledger: false },
+      // GRAVE
+      { file: "sons/son-grave-1.wav", type: "grave", label: "Note grave", y: 130, ledger: true },
+      { file: "sons/son-grave-2.wav", type: "grave", label: "Note grave", y: 120, ledger: false },
+      { file: "sons/son-grave-3.wav", type: "grave", label: "Note grave", y: 110, ledger: false },
+      { file: "sons/son-grave-4.wav", type: "grave", label: "Note grave", y: 120, ledger: false },
+      { file: "sons/son-grave-5.wav", type: "grave", label: "Note grave", y: 110, ledger: false },
+      { file: "sons/son-grave-6.wav", type: "grave", label: "Note grave", y: 100, ledger: false },
 
-  // MEDIUM
-  { file: "sons/son-medium-1.wav", type: "medium", label: "Note médium", y: 90, ledger: false },
-  { file: "sons/son-medium-2.wav", type: "medium", label: "Note médium", y: 80, ledger: false },
-  { file: "sons/son-medium-3.wav", type: "medium", label: "Note médium", y: 70, ledger: false },
-  { file: "sons/son-medium-4.wav", type: "medium", label: "Note médium", y: 80, ledger: false },
-  { file: "sons/son-medium-5.wav", type: "medium", label: "Note médium", y: 70, ledger: false },
-  { file: "sons/son-medium-6.wav", type: "medium", label: "Note médium", y: 60, ledger: false },
+      // MEDIUM
+      { file: "sons/son-medium-1.wav", type: "medium", label: "Note médium", y: 90, ledger: false },
+      { file: "sons/son-medium-2.wav", type: "medium", label: "Note médium", y: 80, ledger: false },
+      { file: "sons/son-medium-3.wav", type: "medium", label: "Note médium", y: 70, ledger: false },
+      { file: "sons/son-medium-4.wav", type: "medium", label: "Note médium", y: 80, ledger: false },
+      { file: "sons/son-medium-5.wav", type: "medium", label: "Note médium", y: 70, ledger: false },
+      { file: "sons/son-medium-6.wav", type: "medium", label: "Note médium", y: 60, ledger: false },
 
-  // AIGU
-  { file: "sons/son-aigu-1.wav", type: "aigu", label: "Note aiguë", y: 50, ledger: false },
-  { file: "sons/son-aigu-2.wav", type: "aigu", label: "Note aiguë", y: 40, ledger: false },
-  { file: "sons/son-aigu-3.wav", type: "aigu", label: "Note aiguë", y: 30, ledger: true },
-  { file: "sons/son-aigu-4.wav", type: "aigu", label: "Note aiguë", y: 40, ledger: false },
-  { file: "sons/son-aigu-5.wav", type: "aigu", label: "Note aiguë", y: 30, ledger: true },
-  { file: "sons/son-aigu-6.wav", type: "aigu", label: "Note aiguë", y: 20, ledger: true }
-];
-
-    // ------------------------
-    // VARIABLES
-    // ------------------------
+      // AIGU
+      { file: "sons/son-aigu-1.wav", type: "aigu", label: "Note aiguë", y: 50, ledger: false },
+      { file: "sons/son-aigu-2.wav", type: "aigu", label: "Note aiguë", y: 40, ledger: false },
+      { file: "sons/son-aigu-3.wav", type: "aigu", label: "Note aiguë", y: 30, ledger: true },
+      { file: "sons/son-aigu-4.wav", type: "aigu", label: "Note aiguë", y: 40, ledger: false },
+      { file: "sons/son-aigu-5.wav", type: "aigu", label: "Note aiguë", y: 30, ledger: true },
+      { file: "sons/son-aigu-6.wav", type: "aigu", label: "Note aiguë", y: 20, ledger: true }
+    ];
 
     let level = 1;
     let level2Unlocked = false;
@@ -532,10 +523,6 @@
     const level1QuestionCount = 10;
     const level2QuestionCount = 10;
     const level1UnlockThreshold = 7;
-
-    // ------------------------
-    // INTERFACE
-    // ------------------------
 
     function updateLevelButtons() {
       document.getElementById("level1Btn").classList.remove("active");
@@ -611,10 +598,6 @@
       }
     }
 
-    // ------------------------
-    // NIVEAUX
-    // ------------------------
-
     function setLevel(l) {
       if (l === 2 && !level2Unlocked) return;
 
@@ -631,10 +614,6 @@
       }
       setLevel(2);
     }
-
-    // ------------------------
-    // QUESTIONS
-    // ------------------------
 
     function getFilteredQuestions() {
       if (level === 1) {
@@ -668,35 +647,15 @@
       currentAudio.play();
     }
 
-    function generateQuestion() {
-      alreadyAnswered = false;
-      currentQuestion = getRandomQuestionWithoutImmediateRepeat();
-      prepareAudio();
-
-      document.getElementById("nextBtn").style.display = "none";
-      document.getElementById("staffZone").style.display = "none";
-
-      clearKeyboardHighlights();
-      setFeedback("Clique sur “Écouter la note”, puis choisis ta réponse.");
-      updateProgress();
-    }
-
-    // ------------------------
-    // PORTEE
-    // ------------------------
-
     function showNoteOnStaff() {
       const staffZone = document.getElementById("staffZone");
       const staffLabel = document.getElementById("staffLabel");
       const noteHead = document.getElementById("noteHead");
-      const noteStem = document.getElementById("noteStem");
       const ledgerLine = document.getElementById("ledgerLine");
 
       const y = currentQuestion.y;
 
       noteHead.setAttribute("cy", y);
-      noteStem.setAttribute("y1", y);
-      noteStem.setAttribute("y2", y - 40);
 
       if (currentQuestion.ledger) {
         ledgerLine.style.display = "block";
@@ -715,9 +674,18 @@
       staffZone.style.display = "block";
     }
 
-    // ------------------------
-    // REPONSES
-    // ------------------------
+    function generateQuestion() {
+      alreadyAnswered = false;
+      currentQuestion = getRandomQuestionWithoutImmediateRepeat();
+      prepareAudio();
+
+      document.getElementById("nextBtn").style.display = "none";
+      document.getElementById("staffZone").style.display = "none";
+
+      clearKeyboardHighlights();
+      setFeedback("Clique sur “Écouter la note”, puis choisis ta réponse.");
+      updateProgress();
+    }
 
     function checkAnswer(answer) {
       if (alreadyAnswered) return;
@@ -756,10 +724,6 @@
 
       generateQuestion();
     }
-
-    // ------------------------
-    // FIN DE QUIZ
-    // ------------------------
 
     function showFinalScreen() {
       document.getElementById("quizContent").style.display = "none";
@@ -810,10 +774,6 @@
       clearKeyboardHighlights();
       generateQuestion();
     }
-
-    // ------------------------
-    // INIT
-    // ------------------------
 
     updateLevelButtons();
     generateAnswers();
