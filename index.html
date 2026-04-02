@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quiz grave / aigu</title>
+  <title>Quiz grave / médium / aigu</title>
   <style>
     * {
       box-sizing: border-box;
@@ -23,13 +23,11 @@
 
     .quiz-card {
       width: 100%;
-      max-width: 760px;
-      background: rgba(255, 255, 255, 0.95);
+      max-width: 1000px;
+      background: rgba(255, 255, 255, 0.97);
       border-radius: 24px;
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
       padding: 30px;
-      position: relative;
-      overflow: hidden;
     }
 
     .badge {
@@ -49,9 +47,42 @@
     }
 
     .subtitle {
-      margin: 0 0 22px;
+      margin: 0 0 18px;
       font-size: 18px;
       color: #555;
+    }
+
+    .level-select {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .level-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #ecebff;
+      color: #3b2d72;
+      font-weight: bold;
+      transition: 0.2s ease;
+    }
+
+    .level-btn:hover {
+      background: #dcd9ff;
+    }
+
+    .level-btn.active {
+      background: #6c63ff;
+      color: white;
+    }
+
+    .level-btn.locked {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
     .progress-wrap {
@@ -76,8 +107,15 @@
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #6c63ff, #9f7aea);
-      border-radius: 999px;
       transition: width 0.3s ease;
+    }
+
+    .top-zone {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: center;
+      margin-bottom: 24px;
     }
 
     .sound-zone {
@@ -86,11 +124,10 @@
       border-radius: 20px;
       padding: 26px 20px;
       text-align: center;
-      margin-bottom: 24px;
     }
 
     .sound-icon {
-      font-size: 48px;
+      font-size: 46px;
       margin-bottom: 12px;
     }
 
@@ -111,11 +148,99 @@
       box-shadow: 0 10px 24px rgba(76, 97, 255, 0.32);
     }
 
+    .piano-zone {
+      background: #fafafa;
+      border: 2px solid #ececec;
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .piano-wrap {
+      position: relative;
+      width: 100%;
+      margin: 0 auto;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .piano-wrap img {
+      width: 100%;
+      display: block;
+      border-radius: 14px;
+    }
+
+    .zone-overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      pointer-events: none;
+      transition: 0.25s ease;
+      opacity: 0.20;
+    }
+
+    .zone-grave {
+      left: 0%;
+      width: 33%;
+      background: rgba(0, 153, 255, 0.28);
+      border-right: 2px solid rgba(0, 153, 255, 0.55);
+    }
+
+    .zone-medium {
+      left: 33%;
+      width: 34%;
+      background: rgba(0, 200, 90, 0.26);
+      border-right: 2px solid rgba(0, 200, 90, 0.55);
+    }
+
+    .zone-aigu {
+      left: 67%;
+      width: 33%;
+      background: rgba(255, 0, 0, 0.24);
+    }
+
+    .zone-overlay.highlight {
+      opacity: 0.55;
+      box-shadow: inset 0 0 0 4px rgba(255,255,255,0.75);
+    }
+
+    .zone-label {
+      position: absolute;
+      top: 8px;
+      font-weight: bold;
+      font-size: 20px;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+      pointer-events: none;
+    }
+
+    .label-grave {
+      left: 12px;
+      color: #0099ff;
+    }
+
+    .label-medium {
+      left: 50%;
+      transform: translateX(-50%);
+      color: #00aa55;
+    }
+
+    .label-aigu {
+      right: 12px;
+      color: #ff0000;
+    }
+
     .answers {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 16px;
       margin-bottom: 20px;
+    }
+
+    .answers.two-cols {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .answers.three-cols {
+      grid-template-columns: 1fr 1fr 1fr;
     }
 
     .answer-btn {
@@ -124,8 +249,12 @@
       padding: 18px;
       font-size: 20px;
       cursor: pointer;
-      transition: transform 0.15s ease, background 0.15s ease;
       font-weight: bold;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .answer-btn:hover {
+      transform: translateY(-1px);
     }
 
     .grave-btn {
@@ -135,7 +264,15 @@
 
     .grave-btn:hover {
       background: #c7eaff;
-      transform: translateY(-1px);
+    }
+
+    .medium-btn {
+      background: #e7ffe9;
+      color: #19753a;
+    }
+
+    .medium-btn:hover {
+      background: #d3ffd7;
     }
 
     .aigu-btn {
@@ -145,11 +282,10 @@
 
     .aigu-btn:hover {
       background: #ffd1ea;
-      transform: translateY(-1px);
     }
 
     .feedback {
-      min-height: 70px;
+      min-height: 78px;
       border-radius: 18px;
       padding: 16px 18px;
       background: #f7f7fb;
@@ -169,6 +305,28 @@
     .feedback.error {
       background: #ffeaea;
       color: #b42318;
+    }
+
+    .staff-zone {
+      display: none;
+      margin-bottom: 20px;
+      background: #fffdfd;
+      border: 2px solid #ececec;
+      border-radius: 18px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .staff-label {
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #3b2d72;
+    }
+
+    .staff-svg {
+      width: 100%;
+      max-width: 420px;
+      height: auto;
     }
 
     .bottom-row {
@@ -228,17 +386,22 @@
       cursor: pointer;
     }
 
-    @media (max-width: 640px) {
-      h1 {
-        font-size: 26px;
-      }
+    .unlock-message {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #18794e;
+      font-weight: bold;
+    }
 
-      .answers {
+    @media (max-width: 760px) {
+      .top-zone,
+      .answers.two-cols,
+      .answers.three-cols {
         grid-template-columns: 1fr;
       }
 
-      .quiz-card {
-        padding: 22px;
+      h1 {
+        font-size: 26px;
       }
     }
   </style>
@@ -247,27 +410,62 @@
   <div class="quiz-card">
     <div id="quizContent">
       <div class="badge">Exercice interactif</div>
-      <h1>Grave ou aigu ?</h1>
-      <p class="subtitle">Écoute la note de piano, puis choisis si elle est grave ou aiguë.</p>
+      <h1>Grave, médium ou aigu ?</h1>
+      <p class="subtitle">Écoute une note de piano, puis choisis sa zone sonore.</p>
+
+      <div class="level-select">
+        <button id="level1Btn" class="level-btn active" onclick="setLevel(1)">Niveau 1 : grave / aigu</button>
+        <button id="level2Btn" class="level-btn locked" onclick="trySetLevel2()">Niveau 2 : grave / médium / aigu 🔒</button>
+      </div>
 
       <div class="progress-wrap">
-        <div class="progress-label" id="progressLabel">Question 1 sur 8</div>
+        <div class="progress-label" id="progressLabel">Question 1 sur 10</div>
         <div class="progress-bar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
       </div>
 
-      <div class="sound-zone">
-        <div class="sound-icon">🎹</div>
-        <button class="play-btn" onclick="playSound()">▶ Écouter la note</button>
+      <div class="top-zone">
+        <div class="sound-zone">
+          <div class="sound-icon">🎹</div>
+          <button class="play-btn" onclick="playSound()">▶ Écouter la note</button>
+        </div>
+
+        <div class="piano-zone">
+          <div class="piano-wrap">
+            <img src="piano.png" alt="Clavier de piano" />
+            <div id="zoneGrave" class="zone-overlay zone-grave"></div>
+            <div id="zoneMedium" class="zone-overlay zone-medium"></div>
+            <div id="zoneAigu" class="zone-overlay zone-aigu"></div>
+
+            <div class="zone-label label-grave">GRAVE</div>
+            <div class="zone-label label-medium">MÉDIUM</div>
+            <div class="zone-label label-aigu">AIGU</div>
+          </div>
+        </div>
       </div>
 
-      <div class="answers">
-        <button class="answer-btn grave-btn" onclick="checkAnswer('grave')">Grave</button>
-        <button class="answer-btn aigu-btn" onclick="checkAnswer('aigu')">Aigu</button>
-      </div>
+      <div class="answers two-cols" id="answersContainer"></div>
 
       <div id="feedback" class="feedback">Clique sur “Écouter la note”, puis choisis ta réponse.</div>
+
+      <div id="staffZone" class="staff-zone">
+        <div class="staff-label" id="staffLabel">Voici la note :</div>
+        <svg class="staff-svg" viewBox="0 0 420 160" xmlns="http://www.w3.org/2000/svg">
+          <line x1="40" y1="40" x2="380" y2="40" stroke="black" stroke-width="2"/>
+          <line x1="40" y1="60" x2="380" y2="60" stroke="black" stroke-width="2"/>
+          <line x1="40" y1="80" x2="380" y2="80" stroke="black" stroke-width="2"/>
+          <line x1="40" y1="100" x2="380" y2="100" stroke="black" stroke-width="2"/>
+          <line x1="40" y1="120" x2="380" y2="120" stroke="black" stroke-width="2"/>
+
+          <text x="55" y="102" font-size="70" font-family="serif">𝄞</text>
+
+          <line id="ledgerLine" x1="180" y1="0" x2="240" y2="0" stroke="black" stroke-width="2" style="display:none;" />
+
+          <ellipse id="noteHead" cx="210" cy="0" rx="14" ry="10" fill="black" transform="rotate(-20 210 0)"/>
+          <line id="noteStem" x1="222" y1="0" x2="222" y2="-40" stroke="black" stroke-width="3"/>
+        </svg>
+      </div>
 
       <div class="bottom-row">
         <div id="score" class="score">Score : 0 / 0</div>
@@ -276,80 +474,116 @@
     </div>
 
     <div id="finalScreen" class="final-screen">
-      <h2>Bravo 🎉</h2>
+      <h2 id="finalTitle">Bravo 🎉</h2>
       <div id="finalScore" class="final-score"></div>
+      <div id="unlockMessage" class="unlock-message"></div>
       <p>Tu peux recommencer pour t’entraîner encore.</p>
       <button class="restart-btn" onclick="restartQuiz()">Recommencer</button>
     </div>
   </div>
 
   <script>
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    const audioContext = new AudioContextClass();
+    // ------------------------
+    // CONFIGURATION DES SONS
+    // ------------------------
 
-    const graveNotes = [
-      { name: "C3", freq: 130.81 },
-      { name: "D3", freq: 146.83 },
-      { name: "E3", freq: 164.81 },
-      { name: "G3", freq: 196.00 }
+    const questions = [
+      // GRAVE
+      { file: "sons/son-grave-1.mp3", type: "grave", label: "Note grave", y: 130, ledger: true },
+      { file: "sons/son-grave-2.mp3", type: "grave", label: "Note grave", y: 120, ledger: false },
+      { file: "sons/son-grave-3.mp3", type: "grave", label: "Note grave", y: 110, ledger: false },
+      { file: "sons/son-grave-4.mp3", type: "grave", label: "Note grave", y: 120, ledger: false },
+      { file: "sons/son-grave-5.mp3", type: "grave", label: "Note grave", y: 110, ledger: false },
+      { file: "sons/son-grave-6.mp3", type: "grave", label: "Note grave", y: 100, ledger: false },
+
+      // MEDIUM
+      { file: "sons/son-medium-1.mp3", type: "medium", label: "Note médium", y: 90, ledger: false },
+      { file: "sons/son-medium-2.mp3", type: "medium", label: "Note médium", y: 80, ledger: false },
+      { file: "sons/son-medium-3.mp3", type: "medium", label: "Note médium", y: 70, ledger: false },
+      { file: "sons/son-medium-4.mp3", type: "medium", label: "Note médium", y: 80, ledger: false },
+      { file: "sons/son-medium-5.mp3", type: "medium", label: "Note médium", y: 70, ledger: false },
+      { file: "sons/son-medium-6.mp3", type: "medium", label: "Note médium", y: 60, ledger: false },
+
+      // AIGU
+      { file: "sons/son-aigu-1.mp3", type: "aigu", label: "Note aiguë", y: 50, ledger: false },
+      { file: "sons/son-aigu-2.mp3", type: "aigu", label: "Note aiguë", y: 40, ledger: false },
+      { file: "sons/son-aigu-3.mp3", type: "aigu", label: "Note aiguë", y: 30, ledger: true },
+      { file: "sons/son-aigu-4.mp3", type: "aigu", label: "Note aiguë", y: 40, ledger: false },
+      { file: "sons/son-aigu-5.mp3", type: "aigu", label: "Note aiguë", y: 30, ledger: true },
+      { file: "sons/son-aigu-6.mp3", type: "aigu", label: "Note aiguë", y: 20, ledger: true }
     ];
 
-    const aiguNotes = [
-      { name: "C5", freq: 523.25 },
-      { name: "D5", freq: 587.33 },
-      { name: "E5", freq: 659.25 },
-      { name: "G5", freq: 783.99 }
-    ];
+    // ------------------------
+    // VARIABLES
+    // ------------------------
 
-    const totalQuestionsMax = 8;
+    let level = 1;
+    let level2Unlocked = false;
 
-    let currentAnswer = "";
-    let currentFrequency = 0;
+    let currentQuestion = null;
+    let currentAudio = null;
+    let lastQuestionFile = null;
+
     let totalQuestions = 0;
     let correctAnswers = 0;
     let questionIndex = 0;
     let alreadyAnswered = false;
 
-    function pianoTone(frequency, duration = 1.8) {
-      const now = audioContext.currentTime;
+    const level1QuestionCount = 10;
+    const level2QuestionCount = 10;
+    const level1UnlockThreshold = 7;
 
-      const masterGain = audioContext.createGain();
-      masterGain.connect(audioContext.destination);
-      masterGain.gain.setValueAtTime(0.0001, now);
-      masterGain.gain.exponentialRampToValueAtTime(0.45, now + 0.01);
-      masterGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    // ------------------------
+    // INTERFACE
+    // ------------------------
 
-      const harmonics = [
-        { ratio: 1, gain: 1.0 },
-        { ratio: 2, gain: 0.35 },
-        { ratio: 3, gain: 0.18 },
-        { ratio: 4, gain: 0.08 }
-      ];
+    function updateLevelButtons() {
+      document.getElementById("level1Btn").classList.remove("active");
+      document.getElementById("level2Btn").classList.remove("active");
+      document.getElementById("level2Btn").classList.remove("locked");
 
-      harmonics.forEach(h => {
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
+      if (level === 1) {
+        document.getElementById("level1Btn").classList.add("active");
+      } else {
+        document.getElementById("level2Btn").classList.add("active");
+      }
 
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(frequency * h.ratio, now);
+      if (!level2Unlocked) {
+        document.getElementById("level2Btn").classList.add("locked");
+        document.getElementById("level2Btn").innerHTML = "Niveau 2 : grave / médium / aigu 🔒";
+      } else {
+        document.getElementById("level2Btn").innerHTML = "Niveau 2 : grave / médium / aigu";
+      }
+    }
 
-        gain.gain.setValueAtTime(h.gain, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    function generateAnswers() {
+      const container = document.getElementById("answersContainer");
 
-        osc.connect(gain);
-        gain.connect(masterGain);
-
-        osc.start(now);
-        osc.stop(now + duration);
-      });
+      if (level === 1) {
+        container.className = "answers two-cols";
+        container.innerHTML = `
+          <button class="answer-btn grave-btn" onclick="checkAnswer('grave')">Grave</button>
+          <button class="answer-btn aigu-btn" onclick="checkAnswer('aigu')">Aigu</button>
+        `;
+      } else {
+        container.className = "answers three-cols";
+        container.innerHTML = `
+          <button class="answer-btn grave-btn" onclick="checkAnswer('grave')">Grave</button>
+          <button class="answer-btn medium-btn" onclick="checkAnswer('medium')">Médium</button>
+          <button class="answer-btn aigu-btn" onclick="checkAnswer('aigu')">Aigu</button>
+        `;
+      }
     }
 
     function updateProgress() {
-      const currentDisplay = Math.min(questionIndex + 1, totalQuestionsMax);
+      const maxQ = level === 1 ? level1QuestionCount : level2QuestionCount;
+      const currentDisplay = Math.min(questionIndex + 1, maxQ);
+
       document.getElementById("progressLabel").textContent =
-        `Question ${currentDisplay} sur ${totalQuestionsMax}`;
-      const percent = (questionIndex / totalQuestionsMax) * 100;
-      document.getElementById("progressFill").style.width = percent + "%";
+        `Question ${currentDisplay} sur ${maxQ}`;
+
+      document.getElementById("progressFill").style.width =
+        `${(questionIndex / maxQ) * 100}%`;
     }
 
     function setFeedback(message, type = "") {
@@ -359,28 +593,131 @@
       if (type) feedback.classList.add(type);
     }
 
+    function clearKeyboardHighlights() {
+      document.getElementById("zoneGrave").classList.remove("highlight");
+      document.getElementById("zoneMedium").classList.remove("highlight");
+      document.getElementById("zoneAigu").classList.remove("highlight");
+    }
+
+    function highlightCorrectZone(type) {
+      clearKeyboardHighlights();
+
+      if (type === "grave") {
+        document.getElementById("zoneGrave").classList.add("highlight");
+      } else if (type === "medium") {
+        document.getElementById("zoneMedium").classList.add("highlight");
+      } else if (type === "aigu") {
+        document.getElementById("zoneAigu").classList.add("highlight");
+      }
+    }
+
+    // ------------------------
+    // NIVEAUX
+    // ------------------------
+
+    function setLevel(l) {
+      if (l === 2 && !level2Unlocked) return;
+
+      level = l;
+      updateLevelButtons();
+      generateAnswers();
+      restartQuiz();
+    }
+
+    function trySetLevel2() {
+      if (!level2Unlocked) {
+        setFeedback("🔒 Le niveau 2 se débloque après au moins 7 bonnes réponses sur 10 au niveau 1.");
+        return;
+      }
+      setLevel(2);
+    }
+
+    // ------------------------
+    // QUESTIONS
+    // ------------------------
+
+    function getFilteredQuestions() {
+      if (level === 1) {
+        return questions.filter(q => q.type !== "medium");
+      }
+      return questions;
+    }
+
+    function getRandomQuestionWithoutImmediateRepeat() {
+      let filtered = getFilteredQuestions();
+
+      let available = filtered.filter(q => q.file !== lastQuestionFile);
+
+      if (available.length === 0) {
+        available = filtered;
+      }
+
+      const chosen = available[Math.floor(Math.random() * available.length)];
+      lastQuestionFile = chosen.file;
+      return chosen;
+    }
+
+    function prepareAudio() {
+      currentAudio = new Audio(currentQuestion.file);
+      currentAudio.currentTime = 0;
+    }
+
+    function playSound() {
+      if (!currentAudio) prepareAudio();
+      currentAudio.currentTime = 0;
+      currentAudio.play();
+    }
+
     function generateQuestion() {
       alreadyAnswered = false;
+      currentQuestion = getRandomQuestionWithoutImmediateRepeat();
+      prepareAudio();
+
       document.getElementById("nextBtn").style.display = "none";
+      document.getElementById("staffZone").style.display = "none";
 
-      const isHigh = Math.random() < 0.5;
-      const chosen = isHigh
-        ? aiguNotes[Math.floor(Math.random() * aiguNotes.length)]
-        : graveNotes[Math.floor(Math.random() * graveNotes.length)];
-
-      currentFrequency = chosen.freq;
-      currentAnswer = isHigh ? "aigu" : "grave";
-
+      clearKeyboardHighlights();
       setFeedback("Clique sur “Écouter la note”, puis choisis ta réponse.");
       updateProgress();
     }
 
-    function playSound() {
-      if (audioContext.state === "suspended") {
-        audioContext.resume();
+    // ------------------------
+    // PORTEE
+    // ------------------------
+
+    function showNoteOnStaff() {
+      const staffZone = document.getElementById("staffZone");
+      const staffLabel = document.getElementById("staffLabel");
+      const noteHead = document.getElementById("noteHead");
+      const noteStem = document.getElementById("noteStem");
+      const ledgerLine = document.getElementById("ledgerLine");
+
+      const y = currentQuestion.y;
+
+      noteHead.setAttribute("cy", y);
+      noteStem.setAttribute("y1", y);
+      noteStem.setAttribute("y2", y - 40);
+
+      if (currentQuestion.ledger) {
+        ledgerLine.style.display = "block";
+        ledgerLine.setAttribute("y1", y);
+        ledgerLine.setAttribute("y2", y);
+      } else {
+        ledgerLine.style.display = "none";
       }
-      pianoTone(currentFrequency);
+
+      let zoneText = "";
+      if (currentQuestion.type === "grave") zoneText = "zone grave";
+      if (currentQuestion.type === "medium") zoneText = "zone médium";
+      if (currentQuestion.type === "aigu") zoneText = "zone aiguë";
+
+      staffLabel.textContent = `Voici la note : ${zoneText}`;
+      staffZone.style.display = "block";
     }
+
+    // ------------------------
+    // REPONSES
+    // ------------------------
 
     function checkAnswer(answer) {
       if (alreadyAnswered) return;
@@ -388,32 +725,75 @@
       alreadyAnswered = true;
       totalQuestions++;
 
-      if (answer === currentAnswer) {
+      let label = currentQuestion.type;
+      if (label === "medium") label = "médium";
+
+      if (answer === currentQuestion.type) {
         correctAnswers++;
         setFeedback("✅ Bravo, c’est correct !", "success");
       } else {
-        setFeedback("❌ Ce n’est pas correct. La bonne réponse était : " + currentAnswer + ".", "error");
+        setFeedback(`❌ Ce n’est pas correct. La bonne réponse était : ${label}.`, "error");
       }
 
-      document.getElementById("score").textContent = `Score : ${correctAnswers} / ${totalQuestions}`;
+      document.getElementById("score").textContent =
+        `Score : ${correctAnswers} / ${totalQuestions}`;
+
+      showNoteOnStaff();
+      highlightCorrectZone(currentQuestion.type);
+
       document.getElementById("nextBtn").style.display = "inline-block";
     }
 
     function nextQuestion() {
       questionIndex++;
-      if (questionIndex >= totalQuestionsMax) {
+
+      const maxQ = level === 1 ? level1QuestionCount : level2QuestionCount;
+
+      if (questionIndex >= maxQ) {
         showFinalScreen();
         return;
       }
+
       generateQuestion();
     }
+
+    // ------------------------
+    // FIN DE QUIZ
+    // ------------------------
 
     function showFinalScreen() {
       document.getElementById("quizContent").style.display = "none";
       document.getElementById("finalScreen").style.display = "block";
+
+      const maxQ = level === 1 ? level1QuestionCount : level2QuestionCount;
+
       document.getElementById("finalScore").textContent =
-        `Ton score final : ${correctAnswers} / ${totalQuestionsMax}`;
+        `Ton score final : ${correctAnswers} / ${maxQ}`;
+
       document.getElementById("progressFill").style.width = "100%";
+
+      const finalTitle = document.getElementById("finalTitle");
+      const unlockMessage = document.getElementById("unlockMessage");
+
+      unlockMessage.textContent = "";
+
+      if (level === 1) {
+        if (correctAnswers >= level1UnlockThreshold) {
+          level2Unlocked = true;
+          finalTitle.textContent = "Bravo 🎉";
+          unlockMessage.textContent =
+            "Le niveau 2 est maintenant débloqué : grave, médium, aigu.";
+        } else {
+          finalTitle.textContent = "Bien essayé 👍";
+          unlockMessage.textContent =
+            "Encore un petit effort : il faut au moins 7 bonnes réponses sur 10 pour débloquer le niveau 2.";
+        }
+      } else {
+        finalTitle.textContent = "Bravo 🎉";
+        unlockMessage.textContent = "Tu as terminé le niveau 2.";
+      }
+
+      updateLevelButtons();
     }
 
     function restartQuiz() {
@@ -421,12 +801,22 @@
       correctAnswers = 0;
       questionIndex = 0;
       alreadyAnswered = false;
+      lastQuestionFile = null;
+
       document.getElementById("score").textContent = "Score : 0 / 0";
       document.getElementById("quizContent").style.display = "block";
       document.getElementById("finalScreen").style.display = "none";
+
+      clearKeyboardHighlights();
       generateQuestion();
     }
 
+    // ------------------------
+    // INIT
+    // ------------------------
+
+    updateLevelButtons();
+    generateAnswers();
     generateQuestion();
   </script>
 </body>
